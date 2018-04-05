@@ -6,6 +6,7 @@
 #include <fstream>
 #include <utility>
 #include <algorithm>
+#include <stdexcept>
 
 struct Color24 {
   Color24() { r = g = b = 0; }
@@ -73,7 +74,22 @@ public:
 
   Row operator[](size_type x) { return Row(bitmap_, x); }
   RowConst operator[](size_type x) const { return RowConst(bitmap_, x); }
-  Color GetColor(size_type x, size_type y) { return bitmap_[y][x]; }
+  const Color& at(size_type x, size_type y) const {
+    if (x >= width_ || y >= height_)
+      throw std::out_of_range("Index out of range");
+    return bitmap_[y][x];
+  }
+  Color& at(size_type x, size_type y) {
+    if (x >= width_ || y >= height_)
+      throw std::out_of_range("Index out of range");
+    return bitmap_[y][x];
+  }
+
+  SizeXY size() const {
+    return SizeXY(width_, height_);
+  }
+  size_type Width() const { return width_; }
+  size_type Height() const { return height_; }
 
   void resize(size_type w, size_type h) {
     bitmap_.resize(h);
@@ -137,9 +153,6 @@ public:
 
     for (i = ya; i < y; i++)
       for (j = xa; j < xb; j++) bitmap_[i][j] = c;
-  }
-  const SizeXY size() const {
-    return SizeXY(width_, height_);
   }
   void Insert(size_type x, size_type y, Bitmap& c) {
     size_type i, il, j, jl;
