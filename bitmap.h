@@ -35,18 +35,16 @@ public:
 
 private:
   class Row {
-    std::vector<std::vector<Color>>& b_;
-    size_type r_;
+    std::vector<Color>& b_;
   public:
-    Row(std::vector<std::vector<Color>>& b, size_type r) : b_(b), r_(r) {}
-    Color& operator[](size_type z) const { return b_[z][r_]; }
+    Row(std::vector<Color>& b) : b_(b) {}
+    Color& operator[](size_type z) const { return b_[z]; }
   };
   class RowConst {
-    const std::vector<std::vector<Color>>& b_;
-    size_type r_;
+    const std::vector<Color>& b_;
   public:
-    RowConst(const std::vector<std::vector<Color>>& b, size_type r) : b_(b), r_(r) {}
-    const Color& operator[](size_type z) const { return b_[z][r_]; }
+    RowConst(const std::vector<std::vector<Color>>& b) : b_(b) {}
+    const Color& operator[](size_type z) const { return b_[z]; }
   };
 
 public:
@@ -72,8 +70,8 @@ public:
     return *this;
   }
 
-  Row operator[](size_type x) { return Row(bitmap_, x); }
-  RowConst operator[](size_type x) const { return RowConst(bitmap_, x); }
+  Row operator[](size_type y) { return Row(bitmap_[y]); }
+  RowConst operator[](size_type y) const { return RowConst(bitmap_[y]); }
   const Color& at(size_type x, size_type y) const {
     if (x >= width_ || y >= height_)
       throw std::out_of_range("Index out of range");
